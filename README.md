@@ -259,4 +259,4 @@ Found a bug? Please open an issue on GitHub with:
 
 ---
 
-**Made with ❤️ for better campus placements**
+

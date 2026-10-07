@@ -169,7 +169,7 @@ The application supports two authentication methods:
 
 See [OAUTH_SETUP.md](frontend/OAUTH_SETUP.md) for detailed instructions on configuring Google OAuth.
 
-## 📚 API Documentation
+##  API Documentation
 
 ### Base URL
 ```

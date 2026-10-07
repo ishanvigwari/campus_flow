@@ -1,12 +1,12 @@
-# 🎓 Campus Flow - Student Placement Management System
+#  Campus Flow - Student Placement Management System
 
 A comprehensive web-based platform for managing campus placements, training programs, and student career development.
 
-## 📋 Overview
+##  Overview
 
 Campus Flow is a full-stack application designed to streamline the placement process in educational institutions. It provides separate interfaces for administrators and students to manage placement drives, applications, interviews, training programs, and student projects.
 
-## ✨ Features
+##  Features
 
 ### For Administrators
 - **Dashboard Analytics** - Real-time overview of placements, applications, and upcoming drives
@@ -25,7 +25,7 @@ Campus Flow is a full-stack application designed to streamline the placement pro
 - **Project Showcase** - Add and showcase academic/personal projects
 - **Profile Management** - Maintain resume, skills, and academic information
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Framework**: Spring Boot 3.2.0
@@ -42,7 +42,7 @@ Campus Flow is a full-stack application designed to streamline the placement pro
 - **UI Icons**: Lucide React
 - **OAuth**: @react-oauth/google
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 campus_flow/
@@ -75,7 +75,7 @@ campus_flow/
     └── README.md
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Java 17 or higher
@@ -158,7 +158,7 @@ campus_flow/
 
    Frontend will start at `http://localhost:5173`
 
-## 🔐 Authentication
+##  Authentication
 
 The application supports two authentication methods:
 
@@ -211,16 +211,16 @@ http://localhost:8080/api
 - `POST /trainings` - Create training (Admin)
 - `POST /trainings/{id}/enroll` - Enroll in training
 
-## 🎯 Default Admin Credentials
+##  Default Admin Credentials
 
 After first run, the system initializes with default admin account:
 
 - **Email**: `admin@eduplacement.com`
 - **Password**: `admin123`
 
-⚠️ **Important**: Change the default password immediately after first login!
+ **Important**: Change the default password immediately after first login!
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -230,32 +230,17 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Authors
-
-- Your Name - Initial work
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Spring Boot for the robust backend framework
 - React team for the excellent frontend library
 - Google for OAuth integration
 - All contributors who help improve this project
 
-## 📧 Contact
+##  Contact
 
-For questions or support, please contact: your.email@example.com
-
-## 🐛 Bug Reports
-
-Found a bug? Please open an issue on GitHub with:
-- Bug description
-- Steps to reproduce
-- Expected vs actual behavior
-- Screenshots (if applicable)
+For questions or support, please contact: ishanvigwari@gmail.com
 
 ---
 

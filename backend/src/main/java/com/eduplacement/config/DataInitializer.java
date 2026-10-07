@@ -28,15 +28,23 @@ public class DataInitializer implements CommandLineRunner {
     private final InterviewRepository interviewRepository;
     private final TrainingRepository trainingRepository;
     private final PasswordEncoder passwordEncoder;
+    
+    @org.springframework.beans.factory.annotation.Value("${app.demo-data.enabled:true}")
+    private boolean demoDataEnabled;
 
     @Override
     public void run(String... args) {
+        if (!demoDataEnabled) {
+            log.info("Demo data is disabled. Skipping initialization.");
+            return;
+        }
+        
         if (userRepository.count() > 0) {
             log.info("Database already initialized. Skipping seed data.");
             return;
         }
 
-        log.info("Initializing database with seed data...");
+        log.info("Initializing database with demo data...");
         
         // Create admin user
         User adminUser = createAdminUser();
@@ -59,7 +67,12 @@ public class DataInitializer implements CommandLineRunner {
         // Create trainings
         createTrainings();
         
-        log.info("Database initialization completed successfully!");
+        log.info("Demo data initialization completed successfully!");
+        log.info("=".repeat(60));
+        log.info("DEMO CREDENTIALS:");
+        log.info("Admin: admin@eduplacement.edu / admin123");
+        log.info("Student: emma@eduplacement.edu / student123");
+        log.info("=".repeat(60));
     }
 
     private User createAdminUser() {

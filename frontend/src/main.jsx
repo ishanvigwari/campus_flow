@@ -6,8 +6,6 @@ import {LayoutDashboard, Users, FolderKanban, Building2, BarChart3, Settings, He
 import {studentAPI, driveAPI, applicationAPI, companyAPI, trainingAPI, projectAPI, dashboardAPI, authAPI} from './lib/api';
 import './styles.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-
 function App(){
  const clientId=import.meta.env.VITE_GOOGLE_CLIENT_ID;
  return <GoogleOAuthProvider clientId={clientId||'missing-client-id'}><BrowserRouter><Routes>

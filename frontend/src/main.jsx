@@ -229,7 +229,217 @@ function Applications(){
 }
 
 function Reports(){
-  return <div className="page"><PageHero eyebrow="INSTITUTIONAL INTELLIGENCE" title="Reports & Analytics" text="Comprehensive insights into placement performance, project milestones and institutional growth."/><div className="stats"><Stat icon={<TrendingUp/>} title="Connected" value="✓" change="Real API"/><Stat icon={<Building2/>} title="Backend" value="✓" change="Working"/><Stat icon={<Users/>} title="Database" value="✓" change="Connected"/><Stat icon={<BarChart3/>} title="Status" value="✓" change="Online"/></div><Card title="Reports"><p style={{padding:'20px',textAlign:'center',color:'#666'}}>Advanced reports and analytics dashboard coming soon. Your data is being collected and is available through the API.</p></Card></div>
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    loadReportsData();
+  }, []);
+  
+  const loadReportsData = async () => {
+    try {
+      const [studentsData, drivesData, appsData, companiesData, projectsData, trainingsData] = await Promise.all([
+        studentAPI.getAll(),
+        driveAPI.getAll(),
+        applicationAPI.getAll(),
+        companyAPI.getAll(),
+        projectAPI.getAll(),
+        trainingAPI.getAll()
+      ]);
+      
+      // Calculate statistics
+      const placedStudents = studentsData.filter(s => s.placementStatus === 'PLACED').length;
+      const activeDrives = drivesData.filter(d => d.status === 'ONGOING' || d.status === 'UPCOMING').length;
+      const shortlistedApps = appsData.filter(a => a.status === 'SHORTLISTED' || a.status === 'INTERVIEW_SCHEDULED').length;
+      const activeTrainings = trainingsData.filter(t => t.status === 'ACTIVE').length;
+      const completedProjects = projectsData.filter(p => p.status === 'COMPLETED').length;
+      
+      // Status-wise applications
+      const appsByStatus = {
+        applied: appsData.filter(a => a.status === 'APPLIED').length,
+        shortlisted: appsData.filter(a => a.status === 'SHORTLISTED').length,
+        interview: appsData.filter(a => a.status === 'INTERVIEW_SCHEDULED' || a.status === 'INTERVIEW_COMPLETED').length,
+        selected: appsData.filter(a => a.status === 'SELECTED').length,
+        rejected: appsData.filter(a => a.status === 'REJECTED').length
+      };
+      
+      setStats({
+        totalStudents: studentsData.length,
+        placedStudents,
+        activeDrives,
+        totalApplications: appsData.length,
+        shortlistedApps,
+        activeCompanies: companiesData.filter(c => c.active).length,
+        totalCompanies: companiesData.length,
+        totalProjects: projectsData.length,
+        completedProjects,
+        totalTrainings: trainingsData.length,
+        activeTrainings,
+        placementRate: studentsData.length > 0 ? ((placedStudents / studentsData.length) * 100).toFixed(1) : 0,
+        appsByStatus
+      });
+    } catch(err) {
+      console.error('Failed to load reports:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  if(loading) return <div className="page"><div style={{padding:'40px',textAlign:'center'}}>Loading reports...</div></div>;
+  if(!stats) return <div className="page"><div className="card"><p>Failed to load reports data.</p></div></div>;
+  
+  return (
+    <div className="page">
+      <PageHero 
+        eyebrow="INSTITUTIONAL INTELLIGENCE" 
+        title="Reports & Analytics" 
+        text="Comprehensive insights into placement performance, project milestones and institutional growth."
+      />
+      
+      <div className="stats">
+        <Stat icon={<Users/>} title="Total Students" value={stats.totalStudents} change={`${stats.placedStudents} Placed`}/>
+        <Stat icon={<BriefcaseBusiness/>} title="Active Drives" value={stats.activeDrives} change="Ongoing"/>
+        <Stat icon={<TrendingUp/>} title="Placement Rate" value={`${stats.placementRate}%`} change="This year"/>
+        <Stat icon={<Building2/>} title="Companies" value={stats.totalCompanies} change={`${stats.activeCompanies} Active`}/>
+      </div>
+      
+      <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))', gap:'20px', marginBottom:'20px'}}>
+        <Card title="Applications Overview">
+          <div style={{padding:'20px'}}>
+            <div style={{marginBottom:'15px'}}>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span>Total Applications</span>
+                <strong>{stats.totalApplications}</strong>
+              </div>
+              <div style={{height:'8px', background:'#f0f0f0', borderRadius:'4px'}}>
+                <div style={{height:'100%', width:'100%', background:'#4CAF50', borderRadius:'4px'}}></div>
+              </div>
+            </div>
+            
+            <div style={{marginBottom:'15px'}}>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span>Shortlisted</span>
+                <strong style={{color:'#2196F3'}}>{stats.appsByStatus.shortlisted}</strong>
+              </div>
+              <div style={{height:'8px', background:'#f0f0f0', borderRadius:'4px'}}>
+                <div style={{height:'100%', width:`${(stats.appsByStatus.shortlisted/stats.totalApplications*100)}%`, background:'#2196F3', borderRadius:'4px'}}></div>
+              </div>
+            </div>
+            
+            <div style={{marginBottom:'15px'}}>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span>Interviews</span>
+                <strong style={{color:'#FF9800'}}>{stats.appsByStatus.interview}</strong>
+              </div>
+              <div style={{height:'8px', background:'#f0f0f0', borderRadius:'4px'}}>
+                <div style={{height:'100%', width:`${(stats.appsByStatus.interview/stats.totalApplications*100)}%`, background:'#FF9800', borderRadius:'4px'}}></div>
+              </div>
+            </div>
+            
+            <div style={{marginBottom:'15px'}}>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span>Selected</span>
+                <strong style={{color:'#4CAF50'}}>{stats.appsByStatus.selected}</strong>
+              </div>
+              <div style={{height:'8px', background:'#f0f0f0', borderRadius:'4px'}}>
+                <div style={{height:'100%', width:`${(stats.appsByStatus.selected/stats.totalApplications*100)}%`, background:'#4CAF50', borderRadius:'4px'}}></div>
+              </div>
+            </div>
+            
+            <div>
+              <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px'}}>
+                <span>Rejected</span>
+                <strong style={{color:'#f44336'}}>{stats.appsByStatus.rejected}</strong>
+              </div>
+              <div style={{height:'8px', background:'#f0f0f0', borderRadius:'4px'}}>
+                <div style={{height:'100%', width:`${(stats.appsByStatus.rejected/stats.totalApplications*100)}%`, background:'#f44336', borderRadius:'4px'}}></div>
+              </div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card title="Projects & Training">
+          <div style={{padding:'20px'}}>
+            <div style={{display:'flex', justifyContent:'space-between', padding:'15px', background:'#f5f5f5', borderRadius:'8px', marginBottom:'15px'}}>
+              <div>
+                <div style={{fontSize:'12px', color:'#666', marginBottom:'5px'}}>Total Projects</div>
+                <div style={{fontSize:'24px', fontWeight:'bold', color:'#333'}}>{stats.totalProjects}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontSize:'12px', color:'#666', marginBottom:'5px'}}>Completed</div>
+                <div style={{fontSize:'24px', fontWeight:'bold', color:'#4CAF50'}}>{stats.completedProjects}</div>
+              </div>
+            </div>
+            
+            <div style={{display:'flex', justifyContent:'space-between', padding:'15px', background:'#f5f5f5', borderRadius:'8px'}}>
+              <div>
+                <div style={{fontSize:'12px', color:'#666', marginBottom:'5px'}}>Training Programs</div>
+                <div style={{fontSize:'24px', fontWeight:'bold', color:'#333'}}>{stats.totalTrainings}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontSize:'12px', color:'#666', marginBottom:'5px'}}>Active Now</div>
+                <div style={{fontSize:'24px', fontWeight:'bold', color:'#2196F3'}}>{stats.activeTrainings}</div>
+              </div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card title="Quick Stats">
+          <div style={{padding:'20px'}}>
+            <div style={{display:'grid', gap:'15px'}}>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px', border:'1px solid #e0e0e0', borderRadius:'8px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                  <CheckCircle2 size={20} color="#4CAF50"/>
+                  <span>Placed Students</span>
+                </div>
+                <strong style={{fontSize:'18px'}}>{stats.placedStudents}</strong>
+              </div>
+              
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px', border:'1px solid #e0e0e0', borderRadius:'8px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                  <AlertCircle size={20} color="#FF9800"/>
+                  <span>Shortlisted Apps</span>
+                </div>
+                <strong style={{fontSize:'18px'}}>{stats.shortlistedApps}</strong>
+              </div>
+              
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px', border:'1px solid #e0e0e0', borderRadius:'8px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                  <Target size={20} color="#2196F3"/>
+                  <span>Active Companies</span>
+                </div>
+                <strong style={{fontSize:'18px'}}>{stats.activeCompanies}</strong>
+              </div>
+              
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px', border:'1px solid #e0e0e0', borderRadius:'8px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                  <TrendingUp size={20} color="#9C27B0"/>
+                  <span>Placement Rate</span>
+                </div>
+                <strong style={{fontSize:'18px'}}>{stats.placementRate}%</strong>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+      
+      <Card title="Summary">
+        <div style={{padding:'20px'}}>
+          <p style={{marginBottom:'10px', lineHeight:'1.6'}}>
+            The placement season is progressing well with <strong>{stats.totalApplications}</strong> applications 
+            submitted across <strong>{stats.activeDrives}</strong> active drives. 
+            Currently, <strong>{stats.placedStudents}</strong> students have been successfully placed, 
+            achieving a placement rate of <strong>{stats.placementRate}%</strong>.
+          </p>
+          <p style={{lineHeight:'1.6'}}>
+            Training programs are actively running with <strong>{stats.activeTrainings}</strong> ongoing sessions, 
+            and students have completed <strong>{stats.completedProjects}</strong> projects. 
+            We're partnered with <strong>{stats.totalCompanies}</strong> companies for campus placements.
+          </p>
+        </div>
+      </Card>
+    </div>
+  );
 }
 
 function Profile(){
@@ -295,3 +505,4 @@ function StudentProfile(){
 }
 
 createRoot(document.getElementById('root')).render(<App/>);
+

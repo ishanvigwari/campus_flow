@@ -43,6 +43,7 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/health").permitAll()
+                        .requestMatchers("/debug/**").permitAll() // Debug endpoints for development
                         
                         // Admin-only endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -52,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/projects/**").hasAnyRole("ADMIN", "STUDENT")
                         .requestMatchers(HttpMethod.PUT, "/projects/**").hasAnyRole("ADMIN", "STUDENT")
                         .requestMatchers(HttpMethod.DELETE, "/projects/**").hasRole("ADMIN")
+                        .requestMatchers("/project-updates/**").hasAnyRole("ADMIN", "STUDENT")
+                        .requestMatchers("/project-comments/**").hasAnyRole("ADMIN", "STUDENT")
                         .requestMatchers(HttpMethod.POST, "/companies/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/companies/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/companies/**").hasRole("ADMIN")

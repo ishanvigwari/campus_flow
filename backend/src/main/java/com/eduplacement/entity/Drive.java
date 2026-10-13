@@ -71,6 +71,7 @@ public class Drive {
     private String eligibleMajors;
 
     @OneToMany(mappedBy = "drive", cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Application> applications = new ArrayList<>();
 
     @CreatedDate

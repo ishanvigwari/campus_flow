@@ -1,247 +1,285 @@
-#  Campus Flow - Student Placement Management System
+# EduPlacement Pro
 
-A comprehensive web-based platform for managing campus placements, training programs, and student career development.
+A comprehensive Student Placement Management System with React frontend and Spring Boot backend for managing students, projects, companies, placement drives, applications, interviews, and training programs.
 
-##  Overview
-
-Campus Flow is a full-stack application designed to streamline the placement process in educational institutions. It provides separate interfaces for administrators and students to manage placement drives, applications, interviews, training programs, and student projects.
-
-##  Features
-
-### For Administrators
-- **Dashboard Analytics** - Real-time overview of placements, applications, and upcoming drives
-- **Company Management** - Add and manage recruiting companies
-- **Placement Drives** - Create and manage placement drives with eligibility criteria
-- **Application Tracking** - Monitor student applications and their status
-- **Interview Scheduling** - Schedule and manage interview rounds
-- **Training Programs** - Create and manage training sessions for students
-- **Student Management** - View and manage student profiles and achievements
-
-### For Students
-- **Personal Dashboard** - View applied drives, interview schedules, and training enrollments
-- **Drive Applications** - Browse and apply for available placement drives
-- **Interview Management** - Track interview schedules and feedback
-- **Training Enrollment** - Enroll in training programs to enhance skills
-- **Project Showcase** - Add and showcase academic/personal projects
-- **Profile Management** - Maintain resume, skills, and academic information
-
-##  Tech Stack
-
-### Backend
-- **Framework**: Spring Boot 3.2.0
-- **Language**: Java 17
-- **Database**: PostgreSQL
-- **Security**: Spring Security + JWT Authentication
-- **OAuth**: Google OAuth 2.0 integration
-- **Build Tool**: Maven
-
-### Frontend
-- **Framework**: React 18.3.1
-- **Routing**: React Router DOM 7.0.2
-- **Build Tool**: Vite 6.0.5
-- **UI Icons**: Lucide React
-- **OAuth**: @react-oauth/google
-
-##  Project Structure
-
-```
-campus_flow/
-├── backend/                  # Spring Boot backend
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/eduplacement/
-│   │       │   ├── config/           # Security & initialization configs
-│   │       │   ├── controller/       # REST API controllers
-│   │       │   ├── dto/              # Data Transfer Objects
-│   │       │   ├── entity/           # JPA entities
-│   │       │   ├── exception/        # Exception handlers
-│   │       │   ├── repository/       # Data repositories
-│   │       │   ├── security/         # JWT & OAuth security
-│   │       │   └── service/          # Business logic services
-│   │       └── resources/
-│   │           └── application.properties
-│   └── pom.xml
-│
-└── frontend/                 # React frontend
-    ├── src/
-    │   ├── components/       # Reusable UI components
-    │   ├── pages/            # Page components
-    │   ├── lib/              # Utilities and helpers
-    │   ├── main.jsx          # Application entry point
-    │   └── styles.css        # Global styles
-    ├── index.html
-    ├── package.json
-    ├── .env.example
-    └── README.md
-```
-
-##  Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Java 17 or higher
-- Node.js 16+ and npm
-- PostgreSQL 12+
-- Maven 3.8+
+- **Java 17+** - [Download](https://adoptium.net/)
+- **Node.js 18+** - [Download](https://nodejs.org/)
+- **PostgreSQL** (optional, H2 works for quick testing)
 
-### Backend Setup
+### 1. Start Backend (with H2 - No PostgreSQL needed)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/campus_flow.git
-   cd campus_flow/backend
-   ```
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
+```
 
-2. **Configure Database**
-   
-   Create a PostgreSQL database:
-   ```sql
-   CREATE DATABASE eduplacement;
-   ```
+Backend runs at: **http://localhost:8080/api**
 
-3. **Configure Application Properties**
-   
-   Create `backend/src/main/resources/application.properties`:
-   ```properties
-   # Database Configuration
-   spring.datasource.url=jdbc:postgresql://localhost:5432/eduplacement
-   spring.datasource.username=your_db_username
-   spring.datasource.password=your_db_password
-   
-   # JPA Configuration
-   spring.jpa.hibernate.ddl-auto=update
-   spring.jpa.show-sql=true
-   spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-   
-   # JWT Configuration
-   jwt.secret=your-256-bit-secret-key-here
-   jwt.expiration=86400000
-   
-   # Google OAuth
-   google.client.id=your-google-client-id
-   
-   # Server Configuration
-   server.port=8080
-   ```
+### 2. Start Frontend
 
-4. **Build and Run**
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
-   ```
+```powershell
+cd frontend
+npm install
+npm run dev
+```
 
-   Backend will start at `http://localhost:8080`
+Frontend runs at: **http://localhost:5173**
 
-### Frontend Setup
+### 3. Login with Demo Credentials
 
-1. **Navigate to frontend directory**
-   ```bash
-   cd ../frontend
-   ```
+**Admin Portal**: http://localhost:5173/login/admin
+- Email: `admin@eduplacement.edu`
+- Password: `admin123`
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+**Student Portal**: http://localhost:5173/login/student
+- Email: `emma@eduplacement.edu`
+- Password: `student123`
 
-3. **Configure Environment Variables**
-   
-   Copy `.env.example` to `.env` and update:
+## 📁 Project Structure
+
+```
+management_system/
+├── backend/              # Spring Boot REST API
+│   ├── src/
+│   ├── pom.xml
+│   └── mvnw.cmd
+│
+├── frontend/             # React + Vite application
+│   ├── src/
+│   ├── package.json
+│   └── .env
+│
+└── README.md            # This file
+```
+
+## ⚙️ Technology Stack
+
+### Backend
+- **Spring Boot 3.2.0** - REST API framework
+- **Java 17** - Programming language
+- **PostgreSQL / H2** - Database (H2 for quick testing)
+- **Spring Security + JWT** - Authentication & authorization
+- **Google OAuth 2.0** - Social login
+
+### Frontend
+- **React 18.3.1** - UI library
+- **Vite 6.0.5** - Build tool
+- **React Router 7.0.2** - Routing
+- **Lucide React** - Icons
+- **@react-oauth/google** - Google OAuth integration
+
+## 🔐 Authentication
+
+### Email/Password Login
+Both admin and student portals support traditional email/password authentication with JWT tokens.
+
+### Google OAuth (Optional)
+To enable Google login:
+
+1. Get Google Client ID from [Google Cloud Console](https://console.cloud.google.com/)
+2. Configure frontend `.env`:
    ```env
-   VITE_API_URL=http://localhost:8080/api
-   VITE_GOOGLE_CLIENT_ID=your-google-client-id
+   VITE_GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
+   ```
+3. Configure backend `application-h2.properties`:
+   ```properties
+   google.client.id=your_client_id.apps.googleusercontent.com
    ```
 
-4. **Run Development Server**
-   ```bash
-   npm run dev
-   ```
+See [GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md) for detailed instructions.
 
-   Frontend will start at `http://localhost:5173`
+## 🗄️ Database
 
-##  Authentication
+### Quick Testing (H2 - In-Memory)
+No setup required! Just run with `-Dspring-boot.run.profiles=h2`
 
-The application supports two authentication methods:
+**H2 Console**: http://localhost:8080/api/h2-console
+- JDBC URL: `jdbc:h2:mem:eduplacement_pro`
+- Username: `sa`
+- Password: (empty)
 
-1. **Google OAuth 2.0** - Quick sign-in with Google account
-2. **JWT Token Authentication** - Secure token-based authentication
+### Production (PostgreSQL)
+1. Install PostgreSQL
+2. Create database: `eduplacement_pro`
+3. Update `application.properties` with credentials
+4. Run: `.\mvnw.cmd spring-boot:run`
 
-### Setting up Google OAuth
+## 📋 Core Features
 
-See [OAUTH_SETUP.md](frontend/OAUTH_SETUP.md) for detailed instructions on configuring Google OAuth.
+### Admin Portal
+- Dashboard with statistics and analytics
+- Student management (CRUD operations)
+- Project tracking and monitoring
+- Company & placement drive management
+- Application review and processing
+- Interview scheduling
+- Training program administration
+- Reports and analytics
 
-##  API Documentation
+### Student Portal
+- Personal dashboard with placement status
+- Apply to placement drives
+- Track application status
+- View interview schedules
+- Enroll in training programs
+- Update profile and resume
+- View placement statistics
 
-### Base URL
+### API Features
+- RESTful API architecture
+- JWT-based authentication
+- Role-based access control (Admin/Student)
+- Input validation and error handling
+- CORS configuration
+- Auto-seeded demo data
+
+## 🔌 API Endpoints
+
+**Base URL**: `http://localhost:8080/api`
+
+### Public Endpoints
+- `POST /auth/login` - Email/password login
+- `POST /auth/google-login` - Google OAuth login
+- `GET /auth/health` - Health check
+
+### Protected Endpoints (Require JWT Token)
+- `/students/*` - Student management
+- `/projects/*` - Project tracking
+- `/companies/*` - Company management
+- `/drives/*` - Placement drives
+- `/applications/*` - Job applications
+- `/interviews/*` - Interview scheduling
+- `/trainings/*` - Training programs
+- `/dashboard/*` - Dashboard statistics
+
+Full API documentation in [backend/README.md](backend/README.md)
+
+## 📊 Demo Data
+
+The application includes pre-populated demo data:
+- 1 Admin user
+- 5 Student users with profiles
+- 5 Companies (TechCorp, InnovateSoft, DataDynamics, etc.)
+- 3 Active placement drives
+- Sample projects, applications, and interviews
+- 3 Training programs
+
+## 🛠️ Development
+
+### Backend Development
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
 ```
-http://localhost:8080/api
+
+### Frontend Development
+```powershell
+cd frontend
+npm run dev
 ```
 
-### Key Endpoints
+### Build for Production
+**Backend**:
+```powershell
+cd backend
+mvn clean package -DskipTests
+java -jar target/eduplacement-pro-backend-1.0.0.jar
+```
 
-#### Authentication
-- `POST /auth/login` - User login
-- `POST /auth/google` - Google OAuth login
+**Frontend**:
+```powershell
+cd frontend
+npm run build
+npm run preview
+```
 
-#### Students
-- `GET /students` - Get all students (Admin)
-- `GET /students/{id}` - Get student by ID
-- `POST /students` - Create student profile
-- `PUT /students/{id}` - Update student profile
+## 🐛 Troubleshooting
 
-#### Companies
-- `GET /companies` - Get all companies
-- `POST /companies` - Create company (Admin)
+### Backend won't start
+- Check if Java 17+ is installed: `java -version`
+- Ensure port 8080 is available
+- Verify database configuration (or use H2 profile)
 
-#### Drives
-- `GET /drives` - Get all placement drives
-- `GET /drives/active` - Get active drives
-- `POST /drives` - Create drive (Admin)
+### Frontend won't start
+- Check if Node.js is installed: `node -v`
+- Run `npm install` in frontend directory
+- Ensure port 5173 is available
 
-#### Applications
-- `GET /applications/student/{studentId}` - Get student applications
-- `POST /applications` - Apply to a drive
-- `PUT /applications/{id}/status` - Update application status (Admin)
+### Can't login
+- Verify backend is running: `curl http://localhost:8080/api/auth/health`
+- Check browser console for errors
+- Try demo credentials listed above
 
-#### Interviews
-- `GET /interviews/student/{studentId}` - Get student interviews
-- `POST /interviews` - Schedule interview (Admin)
+### Port already in use
+Change port in respective config:
+- **Backend**: Edit `application.properties` → `server.port=8081`
+- **Frontend**: Edit `vite.config.js` → `server: { port: 5174 }`
 
-#### Training
-- `GET /trainings` - Get all training programs
-- `POST /trainings` - Create training (Admin)
-- `POST /trainings/{id}/enroll` - Enroll in training
+## 📖 Additional Documentation
 
-##  Default Admin Credentials
+- [GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md) - Google OAuth configuration guide
+- [backend/README.md](backend/README.md) - Backend API documentation
+- [frontend/README.md](frontend/README.md) - Frontend features and setup
 
-After first run, the system initializes with default admin account:
+## 🔒 Security Notes
 
-- **Email**: `admin@eduplacement.com`
-- **Password**: `admin123`
+⚠️ **For Production Deployment**:
+- Change default passwords and JWT secret
+- Enable HTTPS for all communications
+- Configure proper CORS origins
+- Use environment variables for secrets
+- Implement rate limiting
+- Set up database backups
+- Enable security headers
+- Review Spring Security configuration
 
- **Important**: Change the default password immediately after first login!
+## 📞 Support
 
-##  Contributing
+### Check Application Status
+```powershell
+# Backend health
+curl http://localhost:8080/api/auth/health
 
-Contributions are welcome! Please follow these steps:
+# Frontend (should open in browser)
+start http://localhost:5173
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Common Commands
+```powershell
+# Clean and rebuild backend
+cd backend
+.\mvnw.cmd clean install
 
+# Reinstall frontend dependencies
+cd frontend
+Remove-Item -Recurse -Force node_modules
+npm install
+```
 
-##  Acknowledgments
+## 🎯 Success Criteria
 
-- Spring Boot for the robust backend framework
-- React team for the excellent frontend library
-- Google for OAuth integration
-- All contributors who help improve this project
+Your application is ready when:
+- ✅ Backend health endpoint returns "UP"
+- ✅ Can login with demo credentials
+- ✅ Frontend loads without errors
+- ✅ Can navigate between pages
+- ✅ Dashboard displays statistics
 
-##  Contact
+## 📝 License
 
-For questions or support, please contact: ishanvigwari@gmail.com
+MIT License
+
+## 🎉 Getting Help
+
+1. Check documentation files
+2. Review application logs
+3. Inspect browser developer console
+4. Verify configuration files
+5. Test API endpoints with curl or Postman
 
 ---
 
-
+**Built with Spring Boot & React** | **Ready for Campus Placements** 🚀

@@ -33,6 +33,7 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Student student;
 
     @Column(name = "mentor_name", nullable = false)

@@ -75,6 +75,13 @@ public class ApplicationService {
     }
 
     @Transactional
+    public Application updateApplicationStatus(Long id, Application.ApplicationStatus newStatus) {
+        Application application = getApplicationById(id);
+        application.setStatus(newStatus);
+        return applicationRepository.save(application);
+    }
+
+    @Transactional
     public void deleteApplication(Long id) {
         Application application = getApplicationById(id);
         applicationRepository.delete(application);

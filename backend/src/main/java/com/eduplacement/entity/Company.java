@@ -52,6 +52,7 @@ public class Company {
     private Boolean active = true;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Drive> drives = new ArrayList<>();
 
     @CreatedDate

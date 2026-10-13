@@ -43,10 +43,23 @@ public class DriveService {
 
     @Transactional
     public Drive createDrive(Drive drive) {
-        // Validate company exists
-        companyRepository.findById(drive.getCompany().getId())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
-
+        // If company has an id, validate it exists; otherwise look up or create by name
+        com.eduplacement.entity.Company company;
+        if (drive.getCompany().getId() != null) {
+            company = companyRepository.findById(drive.getCompany().getId())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
+        } else if (drive.getCompany().getName() != null && !drive.getCompany().getName().isBlank()) {
+            String name = drive.getCompany().getName().trim();
+            company = companyRepository.findByName(name).orElseGet(() -> {
+                com.eduplacement.entity.Company newCo = new com.eduplacement.entity.Company();
+                newCo.setName(name);
+                newCo.setActive(true);
+                return companyRepository.save(newCo);
+            });
+        } else {
+            throw new RuntimeException("Company name or id is required");
+        }
+        drive.setCompany(company);
         return driveRepository.save(drive);
     }
 
@@ -82,14 +95,17 @@ public class DriveService {
         Long ongoingDrives = driveRepository.countByStatus(Drive.DriveStatus.ONGOING);
         Long upcomingDrives = driveRepository.countByStatus(Drive.DriveStatus.UPCOMING);
         Long completedDrives = driveRepository.countByStatus(Drive.DriveStatus.COMPLETED);
+        Long activeDrives = ongoingDrives + upcomingDrives;
         Double averagePackage = driveRepository.getAveragePackage();
 
         return Map.of(
                 "totalDrives", totalDrives,
+                "activeDrives", activeDrives,
                 "ongoingDrives", ongoingDrives,
                 "upcomingDrives", upcomingDrives,
                 "completedDrives", completedDrives,
-                "averagePackage", averagePackage != null ? averagePackage : 0.0
+                "averagePackage", averagePackage != null ? averagePackage : 0.0,
+                "totalApplications", 0L
         );
     }
 }

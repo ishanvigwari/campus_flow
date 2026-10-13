@@ -52,8 +52,8 @@ Thumbs.db
 # Application
 application-local.properties
 
-# Environment Variables
-.env
-.env.local
-.env.development
-.env.production
+# H2 Database Files
+data/
+*.db
+*.mv.db
+*.trace.db

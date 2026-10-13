@@ -24,10 +24,12 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Student student;
 
     @ManyToOne
     @JoinColumn(name = "drive_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Drive drive;
 
     @Enumerated(EnumType.STRING)

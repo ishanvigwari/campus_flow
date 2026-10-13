@@ -1,5 +1,6 @@
 package com.eduplacement.controller;
 
+import com.eduplacement.dto.DriveResponse;
 import com.eduplacement.entity.Drive;
 import com.eduplacement.service.DriveService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/drives")
@@ -23,32 +25,45 @@ public class DriveController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<List<Drive>> getAllDrives() {
-        return ResponseEntity.ok(driveService.getAllDrives());
+    public ResponseEntity<List<DriveResponse>> getAllDrives() {
+        List<DriveResponse> drives = driveService.getAllDrives().stream()
+                .map(DriveResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(drives);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<Drive> getDriveById(@PathVariable Long id) {
-        return ResponseEntity.ok(driveService.getDriveById(id));
+    public ResponseEntity<DriveResponse> getDriveById(@PathVariable Long id) {
+        Drive drive = driveService.getDriveById(id);
+        return ResponseEntity.ok(DriveResponse.fromEntity(drive));
     }
 
     @GetMapping("/status/{status}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<List<Drive>> getDrivesByStatus(@PathVariable Drive.DriveStatus status) {
-        return ResponseEntity.ok(driveService.getDrivesByStatus(status));
+    public ResponseEntity<List<DriveResponse>> getDrivesByStatus(@PathVariable Drive.DriveStatus status) {
+        List<DriveResponse> drives = driveService.getDrivesByStatus(status).stream()
+                .map(DriveResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(drives);
     }
 
     @GetMapping("/active")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<List<Drive>> getActiveDrives() {
-        return ResponseEntity.ok(driveService.getActiveDrives());
+    public ResponseEntity<List<DriveResponse>> getActiveDrives() {
+        List<DriveResponse> drives = driveService.getActiveDrives().stream()
+                .map(DriveResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(drives);
     }
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Drive>> searchDrives(@RequestParam String keyword) {
-        return ResponseEntity.ok(driveService.searchDrives(keyword));
+    public ResponseEntity<List<DriveResponse>> searchDrives(@RequestParam String keyword) {
+        List<DriveResponse> drives = driveService.searchDrives(keyword).stream()
+                .map(DriveResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(drives);
     }
 
     @GetMapping("/statistics")
@@ -57,17 +72,24 @@ public class DriveController {
         return ResponseEntity.ok(driveService.getDriveStatistics());
     }
 
+    @GetMapping("/stats")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Object>> getStats() {
+        return ResponseEntity.ok(driveService.getDriveStatistics());
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Drive> createDrive(@RequestBody Drive drive) {
+    public ResponseEntity<DriveResponse> createDrive(@RequestBody Drive drive) {
         Drive created = driveService.createDrive(drive);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(DriveResponse.fromEntity(created));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Drive> updateDrive(@PathVariable Long id, @RequestBody Drive drive) {
-        return ResponseEntity.ok(driveService.updateDrive(id, drive));
+    public ResponseEntity<DriveResponse> updateDrive(@PathVariable Long id, @RequestBody Drive drive) {
+        Drive updated = driveService.updateDrive(id, drive);
+        return ResponseEntity.ok(DriveResponse.fromEntity(updated));
     }
 
     @DeleteMapping("/{id}")

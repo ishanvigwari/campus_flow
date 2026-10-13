@@ -1,5 +1,6 @@
 package com.eduplacement.controller;
 
+import com.eduplacement.dto.ApplicationResponse;
 import com.eduplacement.entity.Application;
 import com.eduplacement.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/applications")
@@ -23,32 +25,45 @@ public class ApplicationController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Application>> getAllApplications() {
-        return ResponseEntity.ok(applicationService.getAllApplications());
+    public ResponseEntity<List<ApplicationResponse>> getAllApplications() {
+        List<ApplicationResponse> applications = applicationService.getAllApplications().stream()
+                .map(ApplicationResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<Application> getApplicationById(@PathVariable Long id) {
-        return ResponseEntity.ok(applicationService.getApplicationById(id));
+    public ResponseEntity<ApplicationResponse> getApplicationById(@PathVariable Long id) {
+        Application application = applicationService.getApplicationById(id);
+        return ResponseEntity.ok(ApplicationResponse.fromEntity(application));
     }
 
     @GetMapping("/student/{studentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<List<Application>> getApplicationsByStudent(@PathVariable Long studentId) {
-        return ResponseEntity.ok(applicationService.getApplicationsByStudent(studentId));
+    public ResponseEntity<List<ApplicationResponse>> getApplicationsByStudent(@PathVariable Long studentId) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsByStudent(studentId).stream()
+                .map(ApplicationResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/drive/{driveId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Application>> getApplicationsByDrive(@PathVariable Long driveId) {
-        return ResponseEntity.ok(applicationService.getApplicationsByDrive(driveId));
+    public ResponseEntity<List<ApplicationResponse>> getApplicationsByDrive(@PathVariable Long driveId) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsByDrive(driveId).stream()
+                .map(ApplicationResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/status/{status}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Application>> getApplicationsByStatus(@PathVariable Application.ApplicationStatus status) {
-        return ResponseEntity.ok(applicationService.getApplicationsByStatus(status));
+    public ResponseEntity<List<ApplicationResponse>> getApplicationsByStatus(@PathVariable Application.ApplicationStatus status) {
+        List<ApplicationResponse> applications = applicationService.getApplicationsByStatus(status).stream()
+                .map(ApplicationResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/statistics")
@@ -59,15 +74,26 @@ public class ApplicationController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<Application> createApplication(@RequestBody Application application) {
+    public ResponseEntity<ApplicationResponse> createApplication(@RequestBody Application application) {
         Application created = applicationService.createApplication(application);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApplicationResponse.fromEntity(created));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
-    public ResponseEntity<Application> updateApplication(@PathVariable Long id, @RequestBody Application application) {
-        return ResponseEntity.ok(applicationService.updateApplication(id, application));
+    public ResponseEntity<ApplicationResponse> updateApplication(@PathVariable Long id, @RequestBody Application application) {
+        Application updated = applicationService.updateApplication(id, application);
+        return ResponseEntity.ok(ApplicationResponse.fromEntity(updated));
+    }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApplicationResponse> updateApplicationStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> statusUpdate) {
+        String status = statusUpdate.get("status");
+        Application updated = applicationService.updateApplicationStatus(id, Application.ApplicationStatus.valueOf(status));
+        return ResponseEntity.ok(ApplicationResponse.fromEntity(updated));
     }
 
     @DeleteMapping("/{id}")

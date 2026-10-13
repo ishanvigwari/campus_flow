@@ -24,10 +24,12 @@ public class TrainingEnrollment {
 
     @ManyToOne
     @JoinColumn(name = "training_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Training training;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Student student;
 
     @Column(name = "progress_percentage")

@@ -1,5 +1,7 @@
 package com.eduplacement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,14 +21,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JsonIgnoreProperties({"passwordHash"})
     private User user;
 
     @Column(name = "student_id", nullable = false, unique = true)
@@ -62,11 +66,16 @@ public class Student {
 
     @Column(columnDefinition = "TEXT")
     private String biography;
+    
+    @Column(name = "created_by")
+    private String createdBy; // Email of admin who enrolled this student
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Application> applications = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Interview> interviews = new ArrayList<>();
 
     @CreatedDate

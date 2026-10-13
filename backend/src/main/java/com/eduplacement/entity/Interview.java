@@ -24,10 +24,12 @@ public class Interview {
 
     @ManyToOne
     @JoinColumn(name = "application_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Application application;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Student student;
 
     @Column(name = "interview_date", nullable = false)

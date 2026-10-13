@@ -61,6 +61,7 @@ public class Training {
     private String materials;
 
     @OneToMany(mappedBy = "training", cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<TrainingEnrollment> enrollments = new ArrayList<>();
 
     @CreatedDate
